@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		ED23A08B248F4F8500D92F64 /* WeakHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED23A08A248F4F8500D92F64 /* WeakHolder.swift */; };
+		ED23A093248F7B9C00D92F64 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED23A092248F7B9C00D92F64 /* View.swift */; };
 		OBJ_24 /* OverlappingViewsSeparatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* OverlappingViewsSeparatorManager.swift */; };
 		OBJ_25 /* CoreGraphics+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* CoreGraphics+Operators.swift */; };
 		OBJ_26 /* MortonOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* MortonOrder.swift */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		ED23A08A248F4F8500D92F64 /* WeakHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakHolder.swift; sourceTree = "<group>"; };
+		ED23A092248F7B9C00D92F64 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		OBJ_10 /* CoreGraphics+Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Operators.swift"; sourceTree = "<group>"; };
 		OBJ_11 /* MortonOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MortonOrder.swift; sourceTree = "<group>"; };
 		OBJ_12 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				OBJ_11 /* MortonOrder.swift */,
 				OBJ_12 /* Tree.swift */,
 				ED23A08A248F4F8500D92F64 /* WeakHolder.swift */,
+				ED23A092248F7B9C00D92F64 /* View.swift */,
 			);
 			name = OverlappingViewsSeparator;
 			path = Sources/OverlappingViewsSeparator;
@@ -141,6 +144,7 @@
 			files = (
 				OBJ_24 /* OverlappingViewsSeparatorManager.swift in Sources */,
 				OBJ_25 /* CoreGraphics+Operators.swift in Sources */,
+				ED23A093248F7B9C00D92F64 /* View.swift in Sources */,
 				OBJ_26 /* MortonOrder.swift in Sources */,
 				ED23A08B248F4F8500D92F64 /* WeakHolder.swift in Sources */,
 				OBJ_27 /* Tree.swift in Sources */,

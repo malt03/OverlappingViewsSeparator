@@ -40,11 +40,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func apply() {
-        UIView.animate(withDuration: 1) {
-            self.separator.apply()
+        separator.separate { (reflect) in
+            UIView.animate(withDuration: 1) {
+                reflect()
+            }
         }
     }
-    
+
     @IBAction private func reset() {
         UIView.animate(withDuration: 1) {
             self.separator.reset()

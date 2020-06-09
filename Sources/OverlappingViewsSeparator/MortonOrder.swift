@@ -13,9 +13,9 @@ struct MortonOrder {
 }
 
 extension CGPoint {
-    func morton(for window: UIWindow) -> UInt64 {
-        let mortonX = CGPoint.morton(x, window.bounds.width)
-        let mortonY = CGPoint.morton(x, window.bounds.width)
+    func morton(in size: CGSize) -> UInt64 {
+        let mortonX = CGPoint.morton(x, size.width)
+        let mortonY = CGPoint.morton(x, size.width)
         return CGPoint.spread(mortonX) | (CGPoint.spread(mortonY) << 1)
     }
     
@@ -38,12 +38,11 @@ extension CGPoint {
     }
 }
 
-extension UIView {
-    func morton(for window: UIWindow) -> MortonOrder {
-        let rect = convert(bounds, to: window)
-        let leftTopMorton = rect.origin.morton(for: window)
-        let rightBottomMorton = CGPoint(x: rect.maxX, y: rect.maxY).morton(for: window)
-        let level = UIView.level(leftTop: leftTopMorton, rightBottom: rightBottomMorton)
+extension CGRect {
+    func morton(in size: CGSize) -> MortonOrder {
+        let leftTopMorton = origin.morton(in: size)
+        let rightBottomMorton = CGPoint(x: maxX, y: maxY).morton(in: size)
+        let level = CGRect.level(leftTop: leftTopMorton, rightBottom: rightBottomMorton)
         return .init(level: level, number: leftTopMorton)
     }
     

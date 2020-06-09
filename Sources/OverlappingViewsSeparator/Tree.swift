@@ -8,47 +8,56 @@
 import UIKit
 
 final class Tree {
-    private var trees = [UIWindow: Node]()
+    private var root = Node()
     private var nodes = [Element: Node]()
     
     enum Element: Hashable {
-        case flexible(UIView)
-        case stuck(UIView)
+        case flexible(View)
+        case stuck(View)
         
-        var view: UIView {
+        var view: View {
             switch self {
             case .flexible(let view): return view
             case .stuck(let view): return view
             }
         }
     }
-
+    
     typealias ElementWithRect = (element: Element, rect: CGRect)
 
     func processCollisionCombination(spacing: CGFloat, handler: (ElementWithRect, ElementWithRect) -> Void) {
-        for tree in trees.values {
-            tree.processCollisionCombination(spacing: spacing, handler: handler)
+        root.processCollisionCombination(spacing: spacing, handler: handler)
+    }
+    
+    func processFlexibleViews(handler: (View) -> Void) {
+        root.processElements { (element) in
+            if case .flexible(let view) = element {
+                handler(view)
+            }
         }
     }
     
     init<S1: Sequence, S2: Sequence>(views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
-        let flexible = AnySequence(views.lazy.map({ Element.flexible($0) }))
-        let stuck = AnySequence(stuckViews.lazy.map({ Element.stuck($0) }))
+        let flexible = AnySequence(views.lazy.compactMap({ (view) -> Element? in
+            guard let view = View(view) else { return nil }
+            return Element.flexible(view)
+        }))
+        let stuck = AnySequence(stuckViews.lazy.compactMap({ (view) -> Element? in
+            guard let view = View(view) else { return nil }
+            return Element.stuck(view)
+        }))
         for element in [flexible, stuck].joined() {
             let view = element.view
-            guard let window = view.window else { continue }
-            let morton = view.morton(for: window)
-            let root = trees.getOrInit(for: window)
+            let morton = view.rect.morton(in: view.windowSize)
             nodes[element] = root.add(element: element, morton: morton, currentLevel: 0)
         }
     }
     
-    func update<S: Sequence>(views: S) where S.Element == UIView {
+    func update<S: Sequence>(views: S) where S.Element == View {
         for element in views.lazy.map({ Element.flexible($0) }) {
             let view = element.view
-            guard let window = view.window else { continue }
-            let morton = view.morton(for: window)
-            let node = trees.getOrInit(for: window).add(element: element, morton: morton, currentLevel: 0)
+            let morton = view.rect.morton(in: view.windowSize)
+            let node = root.add(element: element, morton: morton, currentLevel: 0)
             if nodes[element] !== node {
                 nodes[element]?.remove(element: element)
                 nodes[element] = node
@@ -65,7 +74,8 @@ final class Tree {
             if elements.isEmpty { return }
             
             func handlerWithCollisionCheck(_ a: Element, _ b: Element) {
-                guard let aRect = a.view.rectInWindow, let bRect = b.view.rectInWindow else { return }
+                let aRect = a.view.convertedRect
+                let bRect = b.view.convertedRect
                 if !aRect.isCollision(to: bRect, spacing: spacing) { return }
                 handler((a, aRect), (b, bRect))
             }
@@ -73,23 +83,25 @@ final class Tree {
             let elements = Array(self.elements)
             for i in 0..<elements.count {
                 let a = elements[i]
-                if a.view.isHidden { continue }
                 for j in (i + 1)..<elements.count {
                     let b = elements[j]
-                    if b.view.isHidden { continue }
                     handlerWithCollisionCheck(a, b)
                 }
-                processChildViews { handlerWithCollisionCheck(a, $0) }
+                processChildElements { handlerWithCollisionCheck(a, $0) }
             }
         }
         
-        private func processChildViews(handler: (Element) -> Void) {
+        func processElements(handler: (Element) -> Void) {
+            for element in elements { handler(element) }
+            processChildElements(handler: handler)
+        }
+        
+        private func processChildElements(handler: (Element) -> Void) {
             for childNode in children.values {
                 for element in childNode.elements {
-                    if element.view.isHidden { continue }
                     handler(element)
                 }
-                childNode.processChildViews(handler: handler)
+                childNode.processChildElements(handler: handler)
             }
         }
         
@@ -124,13 +136,6 @@ extension Dictionary where Value == Tree.Node {
         let value = Tree.Node()
         self[key] = value
         return value
-    }
-}
-
-extension UIView {
-    var rectInWindow: CGRect? {
-        guard let window = window else { return nil }
-        return convert(bounds, to: window)
     }
 }
 

@@ -9,9 +9,11 @@ import UIKit
 
 public final class OverlappingViewsSeparator {
     private let minSpacing: CGFloat
+    private let queue: DispatchQueue
     
-    public init(minSpacing: CGFloat = 0) {
+    public init(minSpacing: CGFloat = 0, queue: DispatchQueue = .global()) {
         self.minSpacing = minSpacing
+        self.queue = queue
     }
     
     private var allViews = Set<WeakHolder<UIView>>()
@@ -43,33 +45,43 @@ public final class OverlappingViewsSeparator {
         }
     }
     
-    public func apply() {
+    public func separate(reflectHandler: @escaping (@escaping () -> Void) -> Void = { $0() }) {
         allViews = .init(AnySequence(allViews)) // remove nil elements
 
         let tree = Tree(
-            views: allViews.lazy.compactMap { $0.value },
-            stuckViews: allStuckViews.lazy.compactMap { $0.value }
+            views: self.allViews.lazy.compactMap { $0.value }.filter { !$0.isHidden },
+            stuckViews: self.allStuckViews.lazy.compactMap { $0.value }.filter { !$0.isHidden }
         )
-
-        var hasCollision = false
-        repeat {
-            hasCollision = false
-            var result = [UIView: CGPoint]()
-            tree.processCollisionCombination(spacing: minSpacing) { (a, b) in
-                let unit = unitVector(from: a.rect.center, to: b.rect.center)
-                if case .flexible(let view) = a.element {
-                    result[view, default: .zero] -= unit * 5
+        
+        queue.async {
+            var hasCollision = false
+            repeat {
+                hasCollision = false
+                var result = [View: CGPoint]()
+                tree.processCollisionCombination(spacing: self.minSpacing) { (a, b) in
+                    let unit = unitVector(from: a.rect.center, to: b.rect.center)
+                    if case .flexible(let view) = a.element {
+                        result[view, default: .zero] -= unit * 5
+                    }
+                    if case .flexible(let view) = b.element {
+                        result[view, default: .zero] += unit * 5
+                    }
+                    hasCollision = true
                 }
-                if case .flexible(let view) = b.element {
-                    result[view, default: .zero] += unit * 5
+                for (view, point) in result {
+                    view.tmpTransform = view.tmpTransform.translatedBy(x: point.x, y: point.y)
                 }
-                hasCollision = true
+                tree.update(views: result.keys)
+            } while hasCollision
+         
+            DispatchQueue.main.async {
+                reflectHandler {
+                    tree.processFlexibleViews { (view) in
+                        view.wrapped.transform = view.tmpTransform
+                    }
+                }
             }
-            for (view, point) in result {
-                view.transform = view.transform.translatedBy(x: point.x, y: point.y)
-            }
-            tree.update(views: result.keys)
-        } while hasCollision
+        }
     }
 }
 
