@@ -2,7 +2,7 @@
 
 ![Screenshot](https://raw.githubusercontent.com/malt03/OverlappingViewsSeparator/master/readme/screenshot.gif)
 
-## Example
+## Minimum Example
 
 ```swift
 import UIKit
@@ -35,3 +35,14 @@ class ViewController: UIViewController {
 
 - Insert `pod 'OverlappingViewsSeparator'` to your Podfile.
 - Run `pod install`.
+
+## Advanced Example
+### Register stuck view
+```swift
+separator.register(stuckView: stuckView)
+```
+
+### Reset
+```swift
+separator.reset()
+```
