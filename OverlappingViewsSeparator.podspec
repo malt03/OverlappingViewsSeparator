@@ -10,7 +10,7 @@ OverlappingViewsSeparator is a library for separate overlapping views.
   s.homepage         = 'https://github.com/malt03/OverlappingViewsSeparator'
   s.license          = { type: 'MIT', file: 'LICENSE' }
   s.author           = { 'Koji Murata' => 'malt.koji@gmail.com' }
-  s.source           = { git: 'https://github.com/malt03/FocusableImageView', tag: "v#{s.version}" }
+  s.source           = { git: 'https://github.com/malt03/OverlappingViewsSeparator.git', tag: "v#{s.version}" }
 
   s.source_files = "Sources/**/*.swift"
 
