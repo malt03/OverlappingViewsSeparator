@@ -73,8 +73,11 @@ final class Tree {
             let elements = Array(self.elements)
             for i in 0..<elements.count {
                 let a = elements[i]
+                if a.view.isHidden { continue }
                 for j in (i + 1)..<elements.count {
-                    handlerWithCollisionCheck(a, elements[j])
+                    let b = elements[j]
+                    if b.view.isHidden { continue }
+                    handlerWithCollisionCheck(a, b)
                 }
                 processChildViews { handlerWithCollisionCheck(a, $0) }
             }
@@ -83,6 +86,7 @@ final class Tree {
         private func processChildViews(handler: (Element) -> Void) {
             for childNode in children.values {
                 for element in childNode.elements {
+                    if element.view.isHidden { continue }
                     handler(element)
                 }
                 childNode.processChildViews(handler: handler)
