@@ -40,5 +40,11 @@ class ViewController: UIViewController {
             self.separator.apply()
         }
     }
+    
+    @IBAction private func reset() {
+        UIView.animate(withDuration: 1) {
+            self.separator.reset()
+        }
+    }
 }
 

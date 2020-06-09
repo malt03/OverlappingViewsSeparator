@@ -28,6 +28,12 @@ public final class OverlappingViewsSeparator {
         allViews.remove(.init(view))
     }
     
+    public func reset() {
+        for view in allViews {
+            view.value?.transform = .identity
+        }
+    }
+    
     public func apply() {
         allViews = .init(AnySequence(allViews)) // remove nil elements
 

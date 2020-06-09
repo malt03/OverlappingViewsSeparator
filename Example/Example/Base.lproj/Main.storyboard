@@ -34,11 +34,18 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="ycJ-Wl-GTc">
-                        <barButtonItem key="rightBarButtonItem" title="Apply" id="bSa-8u-yEl">
-                            <connections>
-                                <action selector="apply" destination="BYZ-38-t0r" id="k5P-2O-NDp"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Apply" id="bSa-8u-yEl">
+                                <connections>
+                                    <action selector="apply" destination="BYZ-38-t0r" id="k5P-2O-NDp"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Reset" id="W4n-Ra-ix4">
+                                <connections>
+                                    <action selector="reset" destination="BYZ-38-t0r" id="x9t-th-a6L"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
