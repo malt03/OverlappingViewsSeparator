@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        separator.register(views: views)
+        separator.register(views: overlappingViews)
     }
 
     @IBAction private func apply() {
