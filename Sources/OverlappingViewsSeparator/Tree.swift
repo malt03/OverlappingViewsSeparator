@@ -7,67 +7,83 @@
 
 import UIKit
 
-typealias UIViewWithRect = (view: UIView, rect: CGRect)
-
 final class Tree {
     private var trees = [UIWindow: Node]()
-    private var nodes = [UIView: Node]()
+    private var nodes = [Element: Node]()
     
-    func processCollisionCombination(spacing: CGFloat, handler: (UIViewWithRect, UIViewWithRect) -> Void) {
+    enum Element: Hashable {
+        case flexible(UIView)
+        case stuck(UIView)
+        
+        var view: UIView {
+            switch self {
+            case .flexible(let view): return view
+            case .stuck(let view): return view
+            }
+        }
+    }
+
+    typealias ElementWithRect = (element: Element, rect: CGRect)
+
+    func processCollisionCombination(spacing: CGFloat, handler: (ElementWithRect, ElementWithRect) -> Void) {
         for tree in trees.values {
             tree.processCollisionCombination(spacing: spacing, handler: handler)
         }
     }
     
-    init<S: Sequence>(views: S) where S.Element == UIView {
-        for view in views {
+    init<S1: Sequence, S2: Sequence>(views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
+        let flexible = AnySequence(views.lazy.map({ Element.flexible($0) }))
+        let stuck = AnySequence(stuckViews.lazy.map({ Element.stuck($0) }))
+        for element in [flexible, stuck].joined() {
+            let view = element.view
             guard let window = view.window else { continue }
             let morton = view.morton(for: window)
             let root = trees.getOrInit(for: window)
-            nodes[view] = root.add(view: view, morton: morton, currentLevel: 0)
+            nodes[element] = root.add(element: element, morton: morton, currentLevel: 0)
         }
     }
     
     func update<S: Sequence>(views: S) where S.Element == UIView {
-        for view in views {
+        for element in views.lazy.map({ Element.flexible($0) }) {
+            let view = element.view
             guard let window = view.window else { continue }
             let morton = view.morton(for: window)
-            let node = trees.getOrInit(for: window).add(view: view, morton: morton, currentLevel: 0)
-            if nodes[view] !== node {
-                nodes[view]?.remove(view: view)
-                nodes[view] = node
+            let node = trees.getOrInit(for: window).add(element: element, morton: morton, currentLevel: 0)
+            if nodes[element] !== node {
+                nodes[element]?.remove(element: element)
+                nodes[element] = node
             }
         }
     }
     
     final class Node {
-        func processCollisionCombination(spacing: CGFloat, handler: (UIViewWithRect, UIViewWithRect) -> Void) {
+        func processCollisionCombination(spacing: CGFloat, handler: (ElementWithRect, ElementWithRect) -> Void) {
             for childNode in children.values {
                 childNode.processCollisionCombination(spacing: spacing, handler: handler)
             }
 
-            if views.isEmpty { return }
+            if elements.isEmpty { return }
             
-            func handlerWithCollisionCheck(_ a: UIView, _ b: UIView) {
-                guard let aRect = a.rectInWindow, let bRect = b.rectInWindow else { return }
+            func handlerWithCollisionCheck(_ a: Element, _ b: Element) {
+                guard let aRect = a.view.rectInWindow, let bRect = b.view.rectInWindow else { return }
                 if !aRect.isCollision(to: bRect, spacing: spacing) { return }
                 handler((a, aRect), (b, bRect))
             }
 
-            let views = Array(self.views)
-            for i in 0..<views.count {
-                let a = views[i]
-                for j in (i + 1)..<views.count {
-                    handlerWithCollisionCheck(a, views[j])
+            let elements = Array(self.elements)
+            for i in 0..<elements.count {
+                let a = elements[i]
+                for j in (i + 1)..<elements.count {
+                    handlerWithCollisionCheck(a, elements[j])
                 }
                 processChildViews { handlerWithCollisionCheck(a, $0) }
             }
         }
         
-        private func processChildViews(handler: (UIView) -> Void) {
+        private func processChildViews(handler: (Element) -> Void) {
             for childNode in children.values {
-                for view in childNode.views {
-                    handler(view)
+                for element in childNode.elements {
+                    handler(element)
                 }
                 childNode.processChildViews(handler: handler)
             }
@@ -75,7 +91,7 @@ final class Tree {
         
         private var parent: Node?
         private var children = [Child: Node]()
-        private var views = Set<UIView>()
+        private var elements = Set<Element>()
         private enum Child: UInt64 {
             case leftTop = 0
             case rightTop = 1
@@ -83,17 +99,17 @@ final class Tree {
             case rightBottom = 3
         }
         
-        func remove(view: UIView) {
-            views.remove(view)
+        func remove(element: Element) {
+            elements.remove(element)
         }
         
-        func add(view: UIView, morton: MortonOrder, currentLevel: Int) -> Node {
+        func add(element: Element, morton: MortonOrder, currentLevel: Int) -> Node {
             if morton.level == currentLevel {
-                views.insert(view)
+                elements.insert(element)
                 return self
             }
             let child = Child(rawValue: (morton.number >> (62 - currentLevel * 2)) & 3)!
-            return children.getOrInit(for: child).add(view: view, morton: morton, currentLevel: currentLevel + 1)
+            return children.getOrInit(for: child).add(element: element, morton: morton, currentLevel: currentLevel + 1)
         }
     }
 }

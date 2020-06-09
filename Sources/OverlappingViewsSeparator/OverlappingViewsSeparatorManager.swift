@@ -15,6 +15,7 @@ public final class OverlappingViewsSeparator {
     }
     
     private var allViews = Set<WeakHolder<UIView>>()
+    private var allStuckViews = Set<WeakHolder<UIView>>()
     
     public func register(view: UIView) {
         allViews.insert(.init(view))
@@ -22,6 +23,14 @@ public final class OverlappingViewsSeparator {
     
     public func register<S: Sequence>(views: S) where S.Element: UIView {
         for view in views { register(view: view) }
+    }
+    
+    public func register(stuckView: UIView) {
+        allStuckViews.insert(.init(stuckView))
+    }
+    
+    public func register<S: Sequence>(stuckViews: S) where S.Element: UIView {
+        for view in stuckViews { register(stuckView: view) }
     }
     
     public func unregister(view: UIView) {
@@ -37,7 +46,10 @@ public final class OverlappingViewsSeparator {
     public func apply() {
         allViews = .init(AnySequence(allViews)) // remove nil elements
 
-        let tree = Tree(views: allViews.lazy.compactMap { $0.value })
+        let tree = Tree(
+            views: allViews.lazy.compactMap { $0.value },
+            stuckViews: allStuckViews.lazy.compactMap { $0.value }
+        )
 
         var hasCollision = false
         repeat {
@@ -45,8 +57,12 @@ public final class OverlappingViewsSeparator {
             var result = [UIView: CGPoint]()
             tree.processCollisionCombination(spacing: minSpacing) { (a, b) in
                 let unit = unitVector(from: a.rect.center, to: b.rect.center)
-                result[a.view, default: .zero] -= unit * 5
-                result[b.view, default: .zero] += unit * 5
+                if case .flexible(let view) = a.element {
+                    result[view, default: .zero] -= unit * 5
+                }
+                if case .flexible(let view) = b.element {
+                    result[view, default: .zero] += unit * 5
+                }
                 hasCollision = true
             }
             for (view, point) in result {

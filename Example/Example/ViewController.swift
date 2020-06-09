@@ -10,6 +10,8 @@ import UIKit
 import OverlappingViewsSeparator
 
 class ViewController: UIViewController {
+    @IBOutlet private var stuckViews: [UIView]!
+    
     private let separator = OverlappingViewsSeparator(minSpacing: 8)
 
     override func viewDidAppear(_ animated: Bool) {
@@ -33,6 +35,8 @@ class ViewController: UIViewController {
             view.addSubview(v)
             separator.register(view: v)
         }
+        
+        separator.register(stuckViews: stuckViews)
     }
     
     @IBAction private func apply() {
