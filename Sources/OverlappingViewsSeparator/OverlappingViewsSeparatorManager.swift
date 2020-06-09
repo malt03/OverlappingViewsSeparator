@@ -14,10 +14,10 @@ public final class OverlappingViewsSeparator {
         self.minSpacing = minSpacing
     }
     
-    private var allViews = Set<UIView>()
+    private var allViews = Set<WeakHolder<UIView>>()
     
     public func register(view: UIView) {
-        allViews.insert(view)
+        allViews.insert(.init(view))
     }
     
     public func register<S: Sequence>(views: S) where S.Element: UIView {
@@ -25,11 +25,13 @@ public final class OverlappingViewsSeparator {
     }
     
     public func unregister(view: UIView) {
-        allViews.remove(view)
+        allViews.remove(.init(view))
     }
     
     public func apply() {
-        let tree = Tree(views: allViews)
+        allViews = .init(AnySequence(allViews)) // remove nil elements
+
+        let tree = Tree(views: allViews.lazy.compactMap { $0.value })
 
         var hasCollision = false
         repeat {
