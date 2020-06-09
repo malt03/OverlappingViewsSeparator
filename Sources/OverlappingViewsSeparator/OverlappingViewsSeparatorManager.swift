@@ -45,7 +45,14 @@ public final class OverlappingViewsSeparator {
         }
     }
     
+    private let lock = NSLock()
+    private var cancel = false
+    
     public func separate(reflectHandler: @escaping (@escaping () -> Void) -> Void = { $0() }) {
+        cancel = true
+        lock.lock()
+        cancel = false
+        
         allViews = .init(AnySequence(allViews)) // remove nil elements
 
         let tree = Tree(
@@ -72,11 +79,16 @@ public final class OverlappingViewsSeparator {
                     view.translate += vector
                 }
                 tree.update(views: result.keys)
-            } while hasCollision
+            } while hasCollision && !self.cancel
          
-            DispatchQueue.main.async {
-                reflectHandler {
-                    tree.processFlexibleViews { $0.applyTransform() }
+            if self.cancel {
+                self.lock.unlock()
+            } else {
+                DispatchQueue.main.async {
+                    reflectHandler {
+                        tree.processFlexibleViews { $0.applyTransform() }
+                        self.lock.unlock()
+                    }
                 }
             }
         }
