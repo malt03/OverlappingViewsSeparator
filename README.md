@@ -18,9 +18,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction private func apply() {
-        UIView.animate(withDuration: 1) {
-            self.separator.apply()
-        }
+        separator.separate()
     }
 }
 ```
@@ -37,6 +35,15 @@ class ViewController: UIViewController {
 - Run `pod install`.
 
 ## Advanced Example
+### Separate with animation
+```swift
+separator.separate { (reflect) in
+    UIView.animate(withDuration: 1) {
+        reflect()
+    }
+}
+```
+
 ### Register stuck view
 ```swift
 separator.register(stuckView: stuckView)
@@ -45,4 +52,9 @@ separator.register(stuckView: stuckView)
 ### Reset
 ```swift
 separator.reset()
+```
+
+### Set queue
+```swift
+let separator = OverlappingViewsSeparator(queue: .main) // default: .global()
 ```
