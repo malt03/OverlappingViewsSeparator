@@ -57,7 +57,7 @@ public final class OverlappingViewsSeparator {
             var hasCollision = false
             repeat {
                 hasCollision = false
-                var result = [View: CGPoint]()
+                var result = [View: CGVector]()
                 tree.processCollisionCombination(spacing: self.minSpacing) { (a, b) in
                     let unit = unitVector(from: a.rect.center, to: b.rect.center)
                     if case .flexible(let view) = a.element {
@@ -68,17 +68,15 @@ public final class OverlappingViewsSeparator {
                     }
                     hasCollision = true
                 }
-                for (view, point) in result {
-                    view.tmpTransform = view.tmpTransform.translatedBy(x: point.x, y: point.y)
+                for (view, vector) in result {
+                    view.translate += vector
                 }
                 tree.update(views: result.keys)
             } while hasCollision
          
             DispatchQueue.main.async {
                 reflectHandler {
-                    tree.processFlexibleViews { (view) in
-                        view.wrapped.transform = view.tmpTransform
-                    }
+                    tree.processFlexibleViews { $0.applyTransform() }
                 }
             }
         }

@@ -7,12 +7,24 @@
 
 import CoreGraphics
 
-func += (lhs: inout CGPoint, rhs: CGVector) {
-    lhs = CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
+func + (lhs: CGPoint, rhs: CGVector) -> CGPoint {
+    CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
 }
 
-func -= (lhs: inout CGPoint, rhs: CGVector) {
-    lhs = CGPoint(x: lhs.x - rhs.dx, y: lhs.y - rhs.dy)
+func + (lhs: CGVector, rhs: CGVector) -> CGVector {
+    CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
+}
+
+func += (lhs: inout CGVector, rhs: CGVector) {
+    lhs = lhs + rhs
+}
+
+func - (lhs: CGVector, rhs: CGVector) -> CGVector {
+    CGVector(dx: lhs.dx - rhs.dx, dy: lhs.dy - rhs.dy)
+}
+
+func -= (lhs: inout CGVector, rhs: CGVector) {
+    lhs = lhs - rhs
 }
 
 func * (lhs: CGVector, rhs: CGFloat) -> CGVector {

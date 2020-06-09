@@ -48,7 +48,7 @@ final class Tree {
         }))
         for element in [flexible, stuck].joined() {
             let view = element.view
-            let morton = view.rect.morton(in: view.windowSize)
+            let morton = view.convertedRect.morton(in: view.windowSize)
             nodes[element] = root.add(element: element, morton: morton, currentLevel: 0)
         }
     }
@@ -56,7 +56,7 @@ final class Tree {
     func update<S: Sequence>(views: S) where S.Element == View {
         for element in views.lazy.map({ Element.flexible($0) }) {
             let view = element.view
-            let morton = view.rect.morton(in: view.windowSize)
+            let morton = view.convertedRect.morton(in: view.windowSize)
             let node = root.add(element: element, morton: morton, currentLevel: 0)
             if nodes[element] !== node {
                 nodes[element]?.remove(element: element)

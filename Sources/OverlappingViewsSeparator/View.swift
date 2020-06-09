@@ -12,17 +12,26 @@ final class View: Hashable {
     func hash(into hasher: inout Hasher) { hasher.combine(wrapped) }
 
     let wrapped: UIView
-    let rect: CGRect
+    private let rect: CGRect
     let windowSize: CGSize
-    var tmpTransform: CGAffineTransform
+    var translate: CGVector
     
-    var convertedRect: CGRect { rect.applying(tmpTransform) }
+    var convertedRect: CGRect {
+        CGRect(
+            origin: rect.origin + translate,
+            size: rect.size
+        )
+    }
     
     init?(_ view: UIView) {
         guard let window = view.window else { return nil }
         rect = view.convert(view.bounds, to: window)
         wrapped = view
         windowSize = window.bounds.size
-        tmpTransform = view.transform
+        translate = .zero
+    }
+    
+    func applyTransform() {
+        wrapped.transform = wrapped.transform.translatedBy(x: translate.dx, y: translate.dy)
     }
 }
