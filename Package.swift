@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "OverlappingViewsSeparator",
     platforms: [
-        .iOS(.v11),
+        .iOS(.v8),
     ],
     products: [
         .library(name: "OverlappingViewsSeparator", targets: ["OverlappingViewsSeparator"]),
