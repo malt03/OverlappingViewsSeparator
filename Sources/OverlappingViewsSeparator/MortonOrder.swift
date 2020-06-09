@@ -31,7 +31,9 @@ extension CGPoint {
     
     private static let exp232: CGFloat = exp2(32)
     private static func morton(_ x: CGFloat, _ r: CGFloat) -> UInt32 {
-        let p = (x + r) / (3 * r)
+        let p = (x + 2 * r) / (5 * r)
+        if p < 0 { return 0 }
+        if p >= 1 { return .max }
         return UInt32(p * exp232)
     }
 }

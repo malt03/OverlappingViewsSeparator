@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        for _ in 0..<50 {
+        for _ in 0..<100 {
             let width = CGFloat.random(in: 20..<100)
             let height = CGFloat.random(in: 20..<100)
             let v = UIView(frame: CGRect(

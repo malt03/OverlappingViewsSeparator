@@ -54,18 +54,29 @@ final class Tree {
                 handler((a, aRect), (b, bRect))
             }
 
-            let views = Array(self.views)
+            var nilIndexes = [Int]()
             for i in 0..<views.count {
-                let view = views[i]
-                for j in (i + 1)..<views.count { handlerWithCollisionCheck(view, views[j]) }
-                processChildViews { handlerWithCollisionCheck(view, $0) }
+                guard let a = views[i].value else {
+                    nilIndexes.append(i)
+                    continue
+                }
+                for j in (i + 1)..<views.count {
+                    guard let b = views[j].value else { continue }
+                    handlerWithCollisionCheck(a, b)
+                }
+                processChildViews { handlerWithCollisionCheck(a, $0) }
+            }
+            for i in nilIndexes.reversed() {
+                views.remove(at: i)
             }
         }
         
         private func processChildViews(handler: (UIView) -> Void) {
             for childNode in children.values {
                 for view in childNode.views {
-                    handler(view)
+                    if let view = view.value {
+                        handler(view)
+                    }
                 }
                 childNode.processChildViews(handler: handler)
             }
@@ -73,7 +84,7 @@ final class Tree {
         
         private var parent: Node?
         private var children = [Child: Node]()
-        private var views = Set<UIView>()
+        private var views = [WeakHolder<UIView>]()
         private enum Child: UInt64 {
             case leftTop = 0
             case rightTop = 1
@@ -82,12 +93,14 @@ final class Tree {
         }
         
         func remove(view: UIView) {
-            views.remove(view)
+            guard let index = views.firstIndex(where: { $0.value == view }) else { return }
+            views.remove(at: index)
         }
         
         func add(view: UIView, morton: MortonOrder, currentLevel: Int) -> Node {
             if morton.level == currentLevel {
-                views.insert(view)
+                if views.contains(where: { $0.value == view }) { return self }
+                views.append(WeakHolder(value: view))
                 return self
             }
             let child = Child(rawValue: (morton.number >> (62 - currentLevel * 2)) & 3)!

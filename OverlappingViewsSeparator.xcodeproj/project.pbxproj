@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		ED23A08B248F4F8500D92F64 /* WeakHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED23A08A248F4F8500D92F64 /* WeakHolder.swift */; };
 		OBJ_24 /* OverlappingViewsSeparatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_9 /* OverlappingViewsSeparatorManager.swift */; };
 		OBJ_25 /* CoreGraphics+Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_10 /* CoreGraphics+Operators.swift */; };
 		OBJ_26 /* MortonOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_11 /* MortonOrder.swift */; };
@@ -15,12 +16,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		"OverlappingViewsSeparator::OverlappingViewsSeparator::Product" /* OverlappingViewsSeparator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OverlappingViewsSeparator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED23A08A248F4F8500D92F64 /* WeakHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakHolder.swift; sourceTree = "<group>"; };
 		OBJ_10 /* CoreGraphics+Operators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Operators.swift"; sourceTree = "<group>"; };
 		OBJ_11 /* MortonOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MortonOrder.swift; sourceTree = "<group>"; };
 		OBJ_12 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		OBJ_9 /* OverlappingViewsSeparatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlappingViewsSeparatorManager.swift; sourceTree = "<group>"; };
+		"OverlappingViewsSeparator::OverlappingViewsSeparator::Product" /* OverlappingViewsSeparator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = OverlappingViewsSeparator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,14 +44,13 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
 				OBJ_7 /* Sources */,
 				OBJ_14 /* Products */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -67,6 +68,7 @@
 				OBJ_10 /* CoreGraphics+Operators.swift */,
 				OBJ_11 /* MortonOrder.swift */,
 				OBJ_12 /* Tree.swift */,
+				ED23A08A248F4F8500D92F64 /* WeakHolder.swift */,
 			);
 			name = OverlappingViewsSeparator;
 			path = Sources/OverlappingViewsSeparator;
@@ -121,7 +123,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_14 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -140,6 +142,7 @@
 				OBJ_24 /* OverlappingViewsSeparatorManager.swift in Sources */,
 				OBJ_25 /* CoreGraphics+Operators.swift in Sources */,
 				OBJ_26 /* MortonOrder.swift in Sources */,
+				ED23A08B248F4F8500D92F64 /* WeakHolder.swift in Sources */,
 				OBJ_27 /* Tree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
