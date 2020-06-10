@@ -51,48 +51,53 @@ public final class OverlappingViewsSeparator {
     private var cancel = false
     
     public func separate(reset: Bool = false, reflectHandler: @escaping (@escaping () -> Void) -> Void = { $0() }) {
-        cancel = true
-        lock.lock()
-        cancel = false
-        
-        allViews = .init(AnySequence(allViews)) // remove nil elements
-
-        let tree = Tree(
-            spacing: minSpacing,
-            reset: reset,
-            views: self.allViews.lazy.compactMap { $0.value }.filter { !$0.isHidden },
-            stuckViews: self.allStuckViews.lazy.compactMap { $0.value }.filter { !$0.isHidden }
-        )
-        
         queue.async {
-            var hasCollision = false
-            let startedAt = Date()
-            repeat {
-                hasCollision = false
-                var result = [View: CGVector]()
-                tree.processCollisionCombination(spacing: self.minSpacing) { (a, b) in
-                    let unit = unitVector(from: a.rect.center, to: b.rect.center)
-                    if case .flexible(let view) = a.element {
-                        result[view, default: .zero] -= unit * 5
-                    }
-                    if case .flexible(let view) = b.element {
-                        result[view, default: .zero] += unit * 5
-                    }
-                    hasCollision = true
-                }
-                for (view, vector) in result {
-                    view.translate += vector
-                }
-                tree.update(views: result.keys)
-            } while hasCollision && !self.cancel && self.maxTimeInterval < startedAt.timeIntervalSinceNow
-         
-            if self.cancel {
-                self.lock.unlock()
-            } else {
-                DispatchQueue.main.async {
-                    reflectHandler {
-                        tree.processFlexibleViews { $0.applyTransform() }
+            if self.cancel { return }
+            self.cancel = true
+            self.lock.lock()
+            self.cancel = false
+            
+            self.allViews = .init(AnySequence(self.allViews)) // remove nil elements
+            
+            DispatchQueue.main.async {
+                let tree = Tree(
+                    spacing: self.minSpacing,
+                    reset: reset,
+                    views: self.allViews.lazy.compactMap { $0.value }.filter { !$0.isHidden },
+                    stuckViews: self.allStuckViews.lazy.compactMap { $0.value }.filter { !$0.isHidden }
+                )
+                
+                self.queue.async {
+                    var hasCollision = false
+                    let startedAt = Date()
+                    repeat {
+                        hasCollision = false
+                        var result = [View: CGVector]()
+                        tree.processCollisionCombination(spacing: self.minSpacing) { (a, b) in
+                            let unit = unitVector(from: a.rect.center, to: b.rect.center)
+                            if case .flexible(let view) = a.element {
+                                result[view, default: .zero] -= unit * 5
+                            }
+                            if case .flexible(let view) = b.element {
+                                result[view, default: .zero] += unit * 5
+                            }
+                            hasCollision = true
+                        }
+                        for (view, vector) in result {
+                            view.translate += vector
+                        }
+                        tree.update(views: result.keys)
+                    } while hasCollision && !self.cancel && self.maxTimeInterval < startedAt.timeIntervalSinceNow
+                    
+                    if self.cancel {
                         self.lock.unlock()
+                    } else {
+                        DispatchQueue.main.async {
+                            reflectHandler {
+                                tree.processFlexibleViews { $0.applyTransform() }
+                                self.lock.unlock()
+                            }
+                        }
                     }
                 }
             }
