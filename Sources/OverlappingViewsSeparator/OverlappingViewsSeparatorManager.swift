@@ -50,7 +50,7 @@ public final class OverlappingViewsSeparator {
     private let lock = NSLock()
     private var cancel = false
     
-    public func separate(reflectHandler: @escaping (@escaping () -> Void) -> Void = { $0() }) {
+    public func separate(reset: Bool = false, reflectHandler: @escaping (@escaping () -> Void) -> Void = { $0() }) {
         cancel = true
         lock.lock()
         cancel = false
@@ -59,6 +59,7 @@ public final class OverlappingViewsSeparator {
 
         let tree = Tree(
             spacing: minSpacing,
+            reset: reset,
             views: self.allViews.lazy.compactMap { $0.value }.filter { !$0.isHidden },
             stuckViews: self.allStuckViews.lazy.compactMap { $0.value }.filter { !$0.isHidden }
         )

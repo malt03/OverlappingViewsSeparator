@@ -38,14 +38,14 @@ final class Tree {
         }
     }
     
-    init<S1: Sequence, S2: Sequence>(spacing: CGFloat, views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
+    init<S1: Sequence, S2: Sequence>(spacing: CGFloat, reset: Bool, views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
         self.spacing = spacing
         let flexible = AnySequence(views.lazy.compactMap({ (view) -> Element? in
-            guard let view = View(view) else { return nil }
+            guard let view = View(view, reset: reset) else { return nil }
             return Element.flexible(view)
         }))
         let stuck = AnySequence(stuckViews.lazy.compactMap({ (view) -> Element? in
-            guard let view = View(view) else { return nil }
+            guard let view = View(view, reset: reset) else { return nil }
             return Element.stuck(view)
         }))
         for element in [flexible, stuck].joined() {
