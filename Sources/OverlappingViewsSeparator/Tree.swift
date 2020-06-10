@@ -8,6 +8,7 @@
 import UIKit
 
 final class Tree {
+    private let spacing: CGFloat
     private var root = Node()
     private var nodes = [Element: Node]()
     
@@ -37,7 +38,8 @@ final class Tree {
         }
     }
     
-    init<S1: Sequence, S2: Sequence>(views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
+    init<S1: Sequence, S2: Sequence>(spacing: CGFloat, views: S1, stuckViews: S2) where S1.Element == UIView, S2.Element == UIView {
+        self.spacing = spacing
         let flexible = AnySequence(views.lazy.compactMap({ (view) -> Element? in
             guard let view = View(view) else { return nil }
             return Element.flexible(view)
@@ -48,7 +50,7 @@ final class Tree {
         }))
         for element in [flexible, stuck].joined() {
             let view = element.view
-            let morton = view.convertedRect.morton(in: view.windowSize)
+            let morton = view.convertedRect.morton(in: view.windowSize, spacing: spacing)
             nodes[element] = root.add(element: element, morton: morton, currentLevel: 0)
         }
     }
@@ -56,7 +58,7 @@ final class Tree {
     func update<S: Sequence>(views: S) where S.Element == View {
         for element in views.lazy.map({ Element.flexible($0) }) {
             let view = element.view
-            let morton = view.convertedRect.morton(in: view.windowSize)
+            let morton = view.convertedRect.morton(in: view.windowSize, spacing: spacing)
             let node = root.add(element: element, morton: morton, currentLevel: 0)
             if nodes[element] !== node {
                 nodes[element]?.remove(element: element)

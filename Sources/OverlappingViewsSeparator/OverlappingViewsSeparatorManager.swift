@@ -58,6 +58,7 @@ public final class OverlappingViewsSeparator {
         allViews = .init(AnySequence(allViews)) // remove nil elements
 
         let tree = Tree(
+            spacing: minSpacing,
             views: self.allViews.lazy.compactMap { $0.value }.filter { !$0.isHidden },
             stuckViews: self.allStuckViews.lazy.compactMap { $0.value }.filter { !$0.isHidden }
         )

@@ -39,9 +39,9 @@ extension CGPoint {
 }
 
 extension CGRect {
-    func morton(in size: CGSize) -> MortonOrder {
+    func morton(in size: CGSize, spacing: CGFloat) -> MortonOrder {
         let leftTopMorton = origin.morton(in: size)
-        let rightBottomMorton = CGPoint(x: maxX, y: maxY).morton(in: size)
+        let rightBottomMorton = CGPoint(x: maxX + spacing, y: maxY + spacing).morton(in: size)
         let level = CGRect.level(leftTop: leftTopMorton, rightBottom: rightBottomMorton)
         return .init(level: level, number: leftTopMorton)
     }
