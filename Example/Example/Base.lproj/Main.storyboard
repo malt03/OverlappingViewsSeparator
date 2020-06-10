@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="A5A-6T-XVg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="A5A-6T-XVg">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -27,11 +27,15 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lXe-z2-UCo"/>
+                        <viewControllerLayoutGuide type="bottom" id="dwf-Si-pmX"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="200" translatesAutoresizingMaskIntoConstraints="NO" id="cS7-W0-0Hy">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IpC-gL-8t7">
                                 <rect key="frame" x="157" y="248" width="100" height="400"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ck-Tw-DPt">
@@ -51,14 +55,24 @@
                                         </constraints>
                                     </view>
                                 </subviews>
-                            </stackView>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="0ck-Tw-DPt" firstAttribute="leading" secondItem="IpC-gL-8t7" secondAttribute="leading" id="BW1-Rr-uNk"/>
+                                    <constraint firstAttribute="trailing" secondItem="0ck-Tw-DPt" secondAttribute="trailing" id="D2g-nW-4KH"/>
+                                    <constraint firstItem="0ck-Tw-DPt" firstAttribute="top" secondItem="IpC-gL-8t7" secondAttribute="top" id="IDo-uY-1Jr"/>
+                                    <constraint firstItem="5vY-lx-6Iz" firstAttribute="leading" secondItem="IpC-gL-8t7" secondAttribute="leading" id="LUO-bI-KJi"/>
+                                    <constraint firstAttribute="trailing" secondItem="5vY-lx-6Iz" secondAttribute="trailing" id="fD6-IP-knf"/>
+                                    <constraint firstAttribute="height" constant="400" id="ilE-gd-aFg"/>
+                                    <constraint firstAttribute="width" constant="100" id="qs4-nh-bTl"/>
+                                    <constraint firstAttribute="bottom" secondItem="5vY-lx-6Iz" secondAttribute="bottom" id="xAF-5X-iLJ"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="cS7-W0-0Hy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dgH-Yc-0po"/>
-                            <constraint firstItem="cS7-W0-0Hy" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="y7s-2n-Cr8"/>
+                            <constraint firstItem="IpC-gL-8t7" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="AeS-hB-bR4"/>
+                            <constraint firstItem="IpC-gL-8t7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SUj-BK-ARU"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="ycJ-Wl-GTc">
                         <rightBarButtonItems>
