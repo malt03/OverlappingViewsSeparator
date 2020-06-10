@@ -9,10 +9,12 @@ import UIKit
 
 public final class OverlappingViewsSeparator {
     private let minSpacing: CGFloat
+    private let maxTimeInterval: TimeInterval
     private let queue: DispatchQueue
     
-    public init(minSpacing: CGFloat = 0, queue: DispatchQueue = .global()) {
+    public init(minSpacing: CGFloat = 0, timeout: TimeInterval = 1, queue: DispatchQueue = .global()) {
         self.minSpacing = minSpacing
+        self.maxTimeInterval = -timeout
         self.queue = queue
     }
     
@@ -62,6 +64,7 @@ public final class OverlappingViewsSeparator {
         
         queue.async {
             var hasCollision = false
+            let startedAt = Date()
             repeat {
                 hasCollision = false
                 var result = [View: CGVector]()
@@ -79,7 +82,7 @@ public final class OverlappingViewsSeparator {
                     view.translate += vector
                 }
                 tree.update(views: result.keys)
-            } while hasCollision && !self.cancel
+            } while hasCollision && !self.cancel && self.maxTimeInterval < startedAt.timeIntervalSinceNow
          
             if self.cancel {
                 self.lock.unlock()
