@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'OverlappingViewsSeparator'
-  s.version          = '0.0.5'
+  s.version          = '1.0.0'
   s.summary          = 'separate overlapping views'
 
   s.description      = <<-DESC
@@ -15,5 +15,5 @@ OverlappingViewsSeparator is a library for separate overlapping views.
   s.source_files = "Sources/**/*.swift"
 
   s.swift_version = "5.2"
-  s.ios.deployment_target = "8.0"
+  s.ios.deployment_target = "9.0"
 end
